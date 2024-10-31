@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* GRADIENT COLOR DETAILS
+
+ background image body {
+    biru main = #14213D 0%
+    kuning 950 = #471901 100%
+ }
+
+ background image sidebar {
+    biru 900 = #244584 0%
+    kuning 900 = #7B330C 100%
+ }
+
+ component selain button {
+    biru 400 = #69B2F1 60%
+    kuning main = #FCA311 100%
+ }
+
+ button {
+    biru 400 = #69B2F1 30%
+    kuning main = #FCA311 100%
+ } */
