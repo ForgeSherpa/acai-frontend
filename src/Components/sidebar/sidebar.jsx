@@ -10,7 +10,7 @@ const slideIn = keyframes`
   to {
     transform: translateX(0);
   }
-`
+`;
 
 const slideOut = keyframes`
   from {
@@ -19,14 +19,21 @@ const slideOut = keyframes`
   to {
     transform: translateX(-100%);
   }
-`
+`;
 
 const SidebarCustom = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== 'animation' // Prevent passing animation prop to DOM element
+  shouldForwardProp: (prop) => prop !== "animation", // Prevent passing animation prop to DOM element
 })`
   position: fixed;
   top: 0;
-  animation: ${({ animation }) => (animation ? css`${slideIn} 1s forwards` : css`${slideOut} 1s forwards`)};
+  animation: ${({ animation }) =>
+    animation
+      ? css`
+          ${slideIn} 0.5s forwards
+        `
+      : css`
+          ${slideOut} 0.5s forwards
+        `};
 
   ::-webkit-scrollbar {
     width: 5px;
@@ -36,16 +43,19 @@ const SidebarCustom = styled.div.withConfig({
     background: #ffffff80;
     border-radius: 5px;
   }
-`
+`;
 
-export default function Sidebar({func, animation}){
-    return(
+export default function Sidebar({ func, animation }) {
+  return (
     <>
-        <SidebarCustom animation={animation} className='w-72 h-screen shadow-[1px_0_3px] bg-gradient-to-b from-[#244584] from-0% to-[#7B330C] to-100%'>
-          <SidebarHead func={func} />
-          <SidebarNewChat />
-          <SidebarHistory />
-        </SidebarCustom>
+      <SidebarCustom
+        animation={animation}
+        className="w-72 h-screen shadow-[1px_0_3px] bg-gradient-to-b from-[#244584] from-0% to-[#7B330C] to-100%"
+      >
+        <SidebarHead func={func} />
+        <SidebarNewChat />
+        <SidebarHistory />
+      </SidebarCustom>
     </>
-    );
+  );
 }
