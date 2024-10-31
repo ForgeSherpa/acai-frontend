@@ -1,0 +1,8 @@
+==basic==
+- sidebar pas pertama kali sampai ke page, kegeser sendiri dari kanan ke kiri (sampai sini)
+- header result blm jadi component
+
+==advance==
+- kasi simpan history di browser (should be tugas FE)
+- kasi chart real coding bukan images
+- kasi table result round 

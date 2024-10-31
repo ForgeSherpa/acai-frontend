@@ -7,7 +7,7 @@ export default function SidebarHead({func}){
                 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#69B2F1] from-60% to-[#FCA311] to-100%">
                 ACAI
             </p>
-            <Button event={func}/>
+            <Button event={func} bgColor='bg-[#244584]'/>
         </div>
     </>
     );
