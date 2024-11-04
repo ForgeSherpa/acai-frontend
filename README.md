@@ -1,8 +1,39 @@
-# React + Vite
+# AcAI Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AcAI use React + Vite to power the beautiful UI interface of AcademyAI.
 
-Currently, two official plugins are available:
+## Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- NodeJS v20 and above. Latest LTS Recommended.
+- pnpm (activate via corepack)
+- AcAI Backend (get it on https://github.com/ForgeSherpa/acai-backend)
+
+## Installation
+
+Simply run:
+
+```bash
+pnpm i
+```
+
+> If `pnpm` not found, run `corepack enable` first. Run the command above again. If prompted to install pnpm, install it.
+
+## Running
+
+Running localy can be done with command below:
+```bash
+pnpm dev
+```
+
+## Building for Production
+
+Use this command instead if you want to build it for production usage:
+
+```bash
+pnpm build
+```
+
+## Deploying
+
+There are couple way to deploy React Project. By [Building For Production](#building-for-production) and deploy it like how you would on any normal
+html project. Or you can use Vercel, Netlify, or any other cloud service that support Vite.
