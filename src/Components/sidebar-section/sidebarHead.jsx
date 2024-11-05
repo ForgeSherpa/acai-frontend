@@ -1,4 +1,5 @@
 import Button from "../button";
+
 export default function SidebarHead({func}){
     return(
     <>
