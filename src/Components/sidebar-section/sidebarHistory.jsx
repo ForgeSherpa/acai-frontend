@@ -1,4 +1,16 @@
+import { useEffect, useState } from 'react';
+
 export default function SidebarHistory() {
+
+  const [history, setHistory] = useState('');
+
+  useEffect(() => {
+    const storedHistory = sessionStorage.getItem('searchQuery');
+    if (storedHistory) {
+      setHistory(JSON.parse(storedHistory));
+    }
+  }, []);
+
   return (
     <>
       <div className="m-5 w-[80%] h-[60%]">
@@ -6,10 +18,19 @@ export default function SidebarHistory() {
           Recent Conversation
         </p>
         <div className="h-[80%] overflow-auto">
-          <p className="mt-8 text-white text-sm truncate">
-            saya ingin tahu apakah kelulusan untuk Lorem ipsum dolor sit amet
-            consectetur, adipisicing elit. Officia in sint delectus.
-          </p>
+          
+          {history.length > 0 ? (
+            history.map((item, index) => (
+              <p key={index} className="mt-8 text-white text-sm truncate">
+                {item}
+              </p>
+              ))
+              ) : (
+              <p className="mt-8 text-white text-sm">
+                No recent conversation
+              </p>
+          )}
+
         </div>
       </div>
     </>
