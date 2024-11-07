@@ -1,6 +1,6 @@
 import Resultheader from "./resultHeader";
 import Resulttable from "./resultTable";
-import Resultchart from "./resultChart";
+import ApexLineChart from "./apexLineChart";
 
 export default function Results() {
   const showTable = false;
@@ -16,7 +16,9 @@ export default function Results() {
             {showTable ? (
               <Resulttable />
             ) : (
-              <Resultchart />
+              <div className="flex justify-center mt-5 mb-5">
+                <ApexLineChart/>
+              </div>
             )}
           </div>
 
