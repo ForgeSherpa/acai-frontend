@@ -1,6 +1,6 @@
 import Resultheader from "./resultHeader";
 import Resulttable from "./resultTable";
-import ApexLineChart from "./apexLineChart";
+import ApexLineChart from "./chart/apexLineChart";
 
 export default function Results() {
   const showTable = false;
@@ -28,3 +28,8 @@ export default function Results() {
     </>
   );
 }
+
+// jika no result
+{/* <div className="flex items-center justify-center h-screen">
+  <p className="text-sm text-slate-800">"Sorry, we couldn't find anything 😞"</p>
+</div> */}
