@@ -1,35 +1,35 @@
-export default function Resulttable(){
+export default function Resulttable({ data }){
+
+  // Check if the data exists and is an array, if not return a message
+  if (!data || !Array.isArray(data)) {
+    return <p>No data available</p>;
+  }
+
+  // Get the keys (which represent the headers)
+  const keys = Object.keys(data);
+
+
     return(
     <> 
        <div class="overflow-x-auto border border-slate-300 rounded-lg mx-auto">
             <table className="table-fixed text-center mx-auto min-w-[100%]">
                 <thead className="bg-[#14213D] text-white rounded-lg">
                   <tr>
-                    <th className="p-3 w-[33.4%]">Song</th>
+                    {/* <th className="p-3 w-[33.4%]">Song</th>
                     <th className="p-3 w-[33.3%]">Artist</th>
-                    <th className="p-3 w-[33.3%]">Year</th>
+                    <th className="p-3 w-[33.3%]">Year</th> */}
+                       {/* Dynamically render headers based on the keys */}
+                      {keys.map((key) => (
+                        <th key={key} className="p-3">{key}</th>
+                      ))}
                   </tr>
                 </thead>
                 <tbody >
-                  <tr className="odd:bg-gray-100 even:bg-white">
-                    <td className="p-3">The Sliding Mr. Bones</td>
-                    <td>Malcolm Lockyer lorem16</td>
-                    <td>1961</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100 even:bg-white">
-                    <td className="p-3">Witchy Woman</td>
-                    <td>The Eagles</td>
-                    <td>1972</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100 even:bg-white">
-                    <td className="p-3">Shining Star</td>
-                    <td>Earth, Wind, and Fire</td>
-                    <td>1975</td>
-                  </tr>
-                  <tr className="odd:bg-gray-100 even:bg-white">
-                    <td className="p-3">Shining Star</td>
-                    <td>Earth, Wind, and Fire</td>
-                    <td>1975</td>
+                {/* Dynamically render rows based on the values */}
+                <tr className="odd:bg-gray-100 even:bg-white">
+                  {keys.map((key) => (
+                    <td key={key} className="p-3">{data[key]}</td>
+                  ))}
                   </tr>
                 </tbody>
           </table>

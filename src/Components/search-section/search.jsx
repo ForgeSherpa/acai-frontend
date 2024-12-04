@@ -9,12 +9,20 @@ export default function Search(){
         setInput(e.target.value);
       };
 
+    // const handleSearchClick = () => {
+    //     if (input.trim() !== '') {
+    //         const storedHistory = sessionStorage.getItem('searchQuery');
+    //         const history = storedHistory ? JSON.parse(storedHistory) : [];
+    //         history.push(input);
+    //         sessionStorage.setItem('searchQuery', JSON.stringify(history));
+    //     }
+    // };
+
     const handleSearchClick = () => {
         if (input.trim() !== '') {
-            const storedHistory = sessionStorage.getItem('searchQuery');
-            const history = storedHistory ? JSON.parse(storedHistory) : [];
-            history.push(input);
-            sessionStorage.setItem('searchQuery', JSON.stringify(history));
+            // Store the user's search input
+            const searchParams = { question: input };
+            sessionStorage.setItem('searchQuery', JSON.stringify(searchParams));
         }
     };
 
