@@ -6,28 +6,27 @@ export default function SidebarHistory() {
   const { setSearchTerm } = useContext(SearchContext);
   const [history, setHistory] = useState([]);
 
-  useEffect(() => {
+  const updateHistory = () => {
     const storedHistory = sessionStorage.getItem('searchQuery');
     if (storedHistory) {
       const parsedHistory = JSON.parse(storedHistory);
-      const filteredHistory = [...new Set(parsedHistory)]; // Filter duplikat
+      const filteredHistory = [...new Set(parsedHistory)]; // Filter duplicates
       setHistory(filteredHistory);
-      
     }
-  }, []);
-
-  const handleHistoryClick = (item) => {
-    // Pindahkan item yang diklik ke atas
-    setSearchTerm(item);
-
-    const updatedHistory = [item, ...history.filter(historyItem => historyItem !== item)];
-
-    // Update history di sessionStorage
-    sessionStorage.setItem('searchQuery', JSON.stringify(updatedHistory));
-
-    // Update state history
-    setHistory(updatedHistory);
   };
+
+  useEffect(() => {
+    updateHistory();
+  }, []); // Runs once when component mounts
+
+  // Use this effect to re-fetch history whenever it changes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateHistory();
+    }, 1000); //1000 ini 1 detik untuk render ulang saat ada history baru, kalau 1ms bisa juga cuman takut computer gak kuat karena artinya komputer harus menjalankan fungsi itu 1000 kali per detik.
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
