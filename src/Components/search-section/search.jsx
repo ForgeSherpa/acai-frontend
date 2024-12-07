@@ -1,7 +1,17 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
+import { SearchContext } from "../context/searchContext";
 
 export default function Search(){
+
+    const { searchTerm } = useContext(SearchContext);
+
+    useEffect(() => {
+        if (searchTerm) {
+          setInput(searchTerm);
+        }
+      }, [searchTerm])
+
 
     const [input, setInput] = useState('');
 
@@ -13,8 +23,9 @@ export default function Search(){
         if (input.trim() !== '') {
             const storedHistory = sessionStorage.getItem('searchQuery');
             const history = storedHistory ? JSON.parse(storedHistory) : [];
-            history.push(input);
-            sessionStorage.setItem('searchQuery', JSON.stringify(history));
+            const updatedHistory = [input, ...history];
+            sessionStorage.setItem('searchQuery', JSON.stringify(updatedHistory ));
+            // setSearchTerm(input); (ini mau comment atau gak tetap jalan kok:v)
         }
     };
 
@@ -24,7 +35,7 @@ export default function Search(){
         <div className="mt-3 h-[39px] lg:h-[30px] xl:h-[39px] xl:w-6/12 lg:w-7/12 md:w-9/12 w-10/12 mx-auto rounded-full flex items-center justify-center bg-gradient-to-r from-[#69B2F1] from-60% to-[#FCA311] to-100%">
             <div className="bg-white w-[99%] h-[35px] lg:h-[26px] xl:h-[35px] mx-auto flex rounded-full">
                 <input className="placeholder-black xl:w-[95%] sm:w-[94%] w-[89%] rounded-full px-3 focus:outline-none" type="text"
-                    placeholder="Type Here..." onChange={handleInputChange}/>
+                    placeholder="Type Here..." onChange={handleInputChange} value={input}/>
                 <Link onClick={handleSearchClick} to="/result" className="bg-[#FCA311] xl:w-[5%] sm:w-[6%] w-[11%] rounded-full flex items-center">
                     <img src="/right-arrow.png" alt="" className="w-6 h-6 mx-auto" />
                 </Link>
