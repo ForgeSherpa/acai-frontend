@@ -3,6 +3,7 @@ import Resulttable from "./resultTable";
 import { useState, useEffect } from 'react';
 
 import JsBarChart from "./chart/jsBarChart";
+import JsPieChart from "./chart/jsPieChart";
 
 export default function Results() {
 
@@ -50,7 +51,6 @@ export default function Results() {
       if (groupBy) {
         requestBody.group_by = groupBy;  // Only include group_by if it's selected
       }
-      console.log(requestBody);
       const res = await fetch('http://127.0.0.1:8000/ask', {
         method: 'POST',
         headers: {
@@ -118,6 +118,7 @@ export default function Results() {
 
                 <div className="w-[60%] flex items-center justify-center mx-auto">
                     <JsBarChart  dataUIB={searchResult}/>
+                    <JsPieChart  dataUIB={searchResult}/>
                 </div>
                 </>
           ) : (
