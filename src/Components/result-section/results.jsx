@@ -1,9 +1,76 @@
 import Resultheader from "./resultHeader";
 import Resulttable from "./resultTable";
+import { useState, useEffect } from 'react';
+
+import ApexBarChart from "./chart/apexBarChart";
+import ApexPieChart from "./chart/apexPieChart";
+import ApexAreaChart from "./chart/apexAreaChart";
 import ApexLineChart from "./chart/apexLineChart";
 
 export default function Results() {
-  const showTable = false;
+
+  const [searchResult, setSearchResult] = useState(null);
+  const [error, setError] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  const [searchTerm, setSearchTerm] = useState(() => {
+    const term = sessionStorage.getItem('searchQuery');
+    return term ? JSON.parse(term)[0] : '';
+  });
+
+  //render result.jsx every 1 second emg agak berat tapi yasudahlah
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const term = sessionStorage.getItem('searchQuery');
+      if (term && term !== searchTerm) {
+        setSearchTerm(JSON.parse(term)[0]);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      sendRequest(searchTerm, page);
+    }
+  }, [searchTerm, page]);
+
+  const sendRequest = async (term, page) => {
+    setLoading(true);
+    try {
+      const res = await fetch('http://127.0.0.1:8000/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: term, page: page}),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.data) {
+        setError(true);
+      } else {
+        setSearchResult(data.data);
+        setTotalPages(data.meta.total_page);
+        setError(false);
+      }
+
+    } catch (error) {
+      setError(true);
+    }finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage); // Change page number on user input
+    }
+  };
 
   return (
     <>
@@ -13,13 +80,53 @@ export default function Results() {
           <Resultheader />
 
           <div className="min-h-80 w-[99.4%] mx-auto bg-white rounded-br-lg rounded-bl-lg p-5">
-            {showTable ? (
-              <Resulttable />
-            ) : (
-              <div className="flex justify-center mt-5 mb-5">
-                <ApexLineChart/>
-              </div>
-            )}
+          <ApexBarChart/>
+          <ApexPieChart/> 
+          <ApexAreaChart/> 
+          <ApexLineChart/> 
+          {/* {error ? (
+            <div className="flex items-center justify-center h-screen">
+              <p className="text-slate-800">"Sorry, we couldn't find anything 😞"</p>
+            </div>
+           ) : loading ? (
+            <div className="flex items-center justify-center h-screen">
+              <p className="text-slate-800">Loading...</p>
+            </div>
+          ) : (
+            <>
+            <Resulttable data={searchResult} />
+            
+            <nav className="mt-5 text-center" aria-label="Page navigation example">
+              <ul className="inline-flex -space-x-px text-base h-10">
+                <li>
+                  <button 
+                          onClick={() => handlePageChange(page - 1)} 
+                          disabled={page === 1}
+                          className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                          Previous
+                  </button>
+                </li>
+                {[...Array(totalPages)].map((_, index) => (
+                      <li key={index}>
+                        <button 
+                          onClick={() => handlePageChange(index + 1)} 
+                          className={`flex items-center justify-center px-4 h-10 leading-tight ${page === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-gray-500'} border border-gray-300 hover:bg-gray-100 hover:text-gray-700`}>
+                          {index + 1}
+                        </button>
+                      </li>
+                    ))}
+                <li>
+                  <button 
+                        onClick={() => handlePageChange(page + 1)} 
+                        disabled={page === totalPages}
+                        className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        Next
+                  </button>
+                </li>
+              </ul>
+            </nav>
+            </>
+          )} */}
           </div>
 
         </div>
@@ -29,7 +136,4 @@ export default function Results() {
   );
 }
 
-// jika no result
-{/* <div className="flex items-center justify-center h-screen">
-  <p className="text-sm text-slate-800">"Sorry, we couldn't find anything 😞"</p>
-</div> */}
+//     <ApexLineChart/>

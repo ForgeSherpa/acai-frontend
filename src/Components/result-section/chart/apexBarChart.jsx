@@ -1,26 +1,23 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
 
-class ApexLineChart extends Component {
+class ApexBarChart extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       options: {
         chart: {
-          id: "basic-line"
+          id: "basic-bar"
         },
         xaxis: {
           categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
-        },
-        title: {
-          text: 'Student Enrollment Over Time'
         }
       },
       series: [
         {
-          name: "Enrollment",
-          data: [30, 40, 45, 50, 49, 60, 70, 91, 100]
+          name: "series-1",
+          data: [30, 40, 45, 50, 49, 60, 70, 91]
         }
       ]
     };
@@ -34,7 +31,7 @@ class ApexLineChart extends Component {
             <Chart
               options={this.state.options}
               series={this.state.series}
-              type="line"
+              type="bar"
               width="500"
             />
           </div>
@@ -44,4 +41,4 @@ class ApexLineChart extends Component {
   }
 }
 
-export default ApexLineChart;
+export default ApexBarChart;

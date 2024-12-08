@@ -1,28 +1,18 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
 
-class ApexLineChart extends Component {
+class ApexPieChart extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       options: {
         chart: {
-          id: "basic-line"
+          id: "basic-pie"
         },
-        xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
-        },
-        title: {
-          text: 'Student Enrollment Over Time'
-        }
+        labels: ['Apple', 'Mango', 'Banana', 'Pineapple']
       },
-      series: [
-        {
-          name: "Enrollment",
-          data: [30, 40, 45, 50, 49, 60, 70, 91, 100]
-        }
-      ]
+      series: [44, 55, 41, 17] // Data for the pie chart
     };
   }
 
@@ -34,7 +24,7 @@ class ApexLineChart extends Component {
             <Chart
               options={this.state.options}
               series={this.state.series}
-              type="line"
+              type="pie"
               width="500"
             />
           </div>
@@ -44,4 +34,4 @@ class ApexLineChart extends Component {
   }
 }
 
-export default ApexLineChart;
+export default ApexPieChart;

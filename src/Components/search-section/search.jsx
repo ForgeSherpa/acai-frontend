@@ -5,15 +5,13 @@ import { SearchContext } from "../context/searchContext";
 export default function Search(){
 
     const { searchTerm, setSearchTerm } = useContext(SearchContext);
+    const [input, setInput] = useState('');
 
     useEffect(() => {
         if (searchTerm) {
           setInput(searchTerm);
         }
       }, [searchTerm])
-
-
-    const [input, setInput] = useState('');
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
@@ -25,8 +23,9 @@ export default function Search(){
             const history = storedHistory ? JSON.parse(storedHistory) : [];
             const updatedHistory = [input, ...history];
             sessionStorage.setItem('searchQuery', JSON.stringify(updatedHistory ));
-            // setSearchTerm(input); (ini mau comment atau gak tetap jalan kok:v)
-            //kode diatas keknya biar pas pindah ke page result, apa yang user input tetap nempel di search barnya...cuman entah kenapa gak jalan...lagian ko patrick suruh tempel inputan user di presenting the result!
+
+            // Set the search term to be used in result page
+            setSearchTerm(input);   
         }
     };
 
