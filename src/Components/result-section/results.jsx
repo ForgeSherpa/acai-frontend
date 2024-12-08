@@ -2,10 +2,7 @@ import Resultheader from "./resultHeader";
 import Resulttable from "./resultTable";
 import { useState, useEffect } from 'react';
 
-import ApexBarChart from "./chart/apexBarChart";
-import ApexPieChart from "./chart/apexPieChart";
-import ApexAreaChart from "./chart/apexAreaChart";
-import ApexLineChart from "./chart/apexLineChart";
+import JsBarChart from "./chart/jsBarChart";
 
 export default function Results() {
 
@@ -14,6 +11,9 @@ export default function Results() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [mode, setMode] = useState("");
+  const [groupBy, setGroupBy] = useState("");
+  const [availableGroupBy, setAvailableGroupBy] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState(() => {
     const term = sessionStorage.getItem('searchQuery');
@@ -34,21 +34,31 @@ export default function Results() {
 
   useEffect(() => {
     if (searchTerm) {
-      sendRequest(searchTerm, page);
+      setGroupBy("");
+      sendRequest(searchTerm, page, groupBy);
     }
-  }, [searchTerm, page]);
+  }, [searchTerm, page, groupBy]);
 
-  const sendRequest = async (term, page) => {
+  const sendRequest = async (term, page, groupBy) => {
     setLoading(true);
     try {
+      const requestBody = {
+        question: term,
+        page: page
+      };
+  
+      if (groupBy) {
+        requestBody.group_by = groupBy;  // Only include group_by if it's selected
+      }
+      console.log(requestBody);
       const res = await fetch('http://127.0.0.1:8000/ask', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ question: term, page: page}),
+        body: JSON.stringify(requestBody),
       });
-
+      
       const data = await res.json();
 
       if (!res.ok || !data.data) {
@@ -57,6 +67,9 @@ export default function Results() {
         setSearchResult(data.data);
         setTotalPages(data.meta.total_page);
         setError(false);
+
+        setMode(data.meta.mode);
+        setAvailableGroupBy(data.meta.available_group_by || []);
       }
 
     } catch (error) {
@@ -77,14 +90,10 @@ export default function Results() {
       <div className="container mx-auto mt-10">
 
         <div className="pt-0.5 pb-0.5 mx-auto w-[90%] rounded-lg min-h-96 bg-gradient-to-b from-[#69B2F1] from-60% to-[#FCA311] to-100%">
-          <Resultheader />
+          <Resultheader/>
 
           <div className="min-h-80 w-[99.4%] mx-auto bg-white rounded-br-lg rounded-bl-lg p-5">
-          <ApexBarChart/>
-          <ApexPieChart/> 
-          <ApexAreaChart/> 
-          <ApexLineChart/> 
-          {/* {error ? (
+          {error ? (
             <div className="flex items-center justify-center h-screen">
               <p className="text-slate-800">"Sorry, we couldn't find anything 😞"</p>
             </div>
@@ -92,6 +101,25 @@ export default function Results() {
             <div className="flex items-center justify-center h-screen">
               <p className="text-slate-800">Loading...</p>
             </div>
+          ) : (
+            <>
+               {mode !== "list" ? (
+                <>
+                <div className="flex justify-end">
+                  <select className="bg-gray-200 p-2 rounded-lg" value={groupBy || ""} onChange={(e) => setGroupBy(e.target.value)} name="" id="">
+                   <option value="" disabled>Select Group By</option>
+                  {availableGroupBy.map((option, index) => (
+                    <option key={index} value={option}>
+                            {option}
+                          </option>
+                  ))}
+                  </select>
+                </div>
+
+                <div className="w-[60%] flex items-center justify-center mx-auto">
+                    <JsBarChart  dataUIB={searchResult}/>
+                </div>
+                </>
           ) : (
             <>
             <Resulttable data={searchResult} />
@@ -126,7 +154,9 @@ export default function Results() {
               </ul>
             </nav>
             </>
-          )} */}
+          )}
+        </>
+      )}
           </div>
 
         </div>
@@ -136,4 +166,3 @@ export default function Results() {
   );
 }
 
-//     <ApexLineChart/>

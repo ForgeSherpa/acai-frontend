@@ -26,7 +26,9 @@ export default function Search(){
 
             // Set the search term to be used in result page
             setSearchTerm(input);   
-        }
+        }else {
+            alert("Please enter a search term!"); // Tampilkan alert jika input kosong
+        }   
     };
 
 
@@ -36,7 +38,7 @@ export default function Search(){
             <div className="bg-white w-[99%] h-[35px] lg:h-[26px] xl:h-[35px] mx-auto flex rounded-full">
                 <input className="placeholder-black xl:w-[95%] sm:w-[94%] w-[89%] rounded-full px-3 focus:outline-none" type="text"
                     placeholder="Type Here..." onChange={handleInputChange} value={input}/>
-                <Link onClick={handleSearchClick} to="/result" className="bg-[#FCA311] xl:w-[5%] sm:w-[6%] w-[11%] rounded-full flex items-center">
+                <Link onClick={handleSearchClick} to="/result" className={`bg-[#FCA311] xl:w-[5%] sm:w-[6%] w-[11%] rounded-full flex items-center ${input.trim() ? '' : 'pointer-events-none opacity-80'}`}>
                     <img src="/right-arrow.png" alt="" className="w-6 h-6 mx-auto" />
                 </Link>
             </div>
