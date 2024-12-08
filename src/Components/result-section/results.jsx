@@ -15,6 +15,7 @@ export default function Results() {
   const [mode, setMode] = useState("");
   const [groupBy, setGroupBy] = useState("");
   const [availableGroupBy, setAvailableGroupBy] = useState([]);
+  const [selectedChart, setSelectedChart] = useState('pie'); // Default chart is pie
 
   const [searchTerm, setSearchTerm] = useState(() => {
     const term = sessionStorage.getItem('searchQuery');
@@ -116,10 +117,26 @@ export default function Results() {
                   </select>
                 </div>
 
-                <div className="w-[60%] flex items-center justify-center mx-auto">
-                    {/* <JsBarChart  dataUIB={searchResult}/> */}
-                    <JsPieChart  dataUIB={searchResult}/>
-                </div>
+                 {/* Pilihan Chart */}
+                  <div className="w-[60%] flex items-center justify-center mx-auto mt-8">
+                    {selectedChart === 'bar' && <JsBarChart dataUIB={searchResult} />}
+                    {selectedChart === 'pie' && <JsPieChart dataUIB={searchResult} />}
+                  </div>
+
+                  <div className="mt-10 flex">
+                    <button 
+                      onClick={() => setSelectedChart('bar')}
+                      className={`py-2 px-4 rounded ${selectedChart === 'bar' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    >
+                      Bar Chart
+                    </button>
+                    <button 
+                      onClick={() => setSelectedChart('pie')}
+                      className={`py-2 px-4 rounded ${selectedChart === 'pie' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    >
+                      Pie Chart
+                    </button>
+                  </div>
                 </>
           ) : (
             <>
