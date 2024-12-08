@@ -1,4 +1,4 @@
-export default function Resultheader(){
+export default function Resultheader({searchTerm}){
     return(
     <>
         <div className="max-h-16 w-[99.4%] mx-auto bg-white rounded-t-lg flex">
@@ -12,7 +12,7 @@ export default function Resultheader(){
             </div>
             <div className="w-[85%] h-16 rounded-lg">
               <p className="text-xl font-semibold p-4 pb-3">
-                Presenting The Results:
+                Presenting The Results For ("<span className="text-blue-500"> {searchTerm} </span>")
               </p>
               <hr className="w-[97%] mx-auto border border-[#69B2F1]" />
             </div>

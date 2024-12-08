@@ -90,7 +90,7 @@ export default function Results() {
       <div className="container mx-auto mt-10">
 
         <div className="pt-0.5 pb-0.5 mx-auto w-[90%] rounded-lg min-h-96 bg-gradient-to-b from-[#69B2F1] from-60% to-[#FCA311] to-100%">
-          <Resultheader/>
+          <Resultheader searchTerm={searchTerm}/>
 
           <div className="min-h-80 w-[99.4%] mx-auto bg-white rounded-br-lg rounded-bl-lg p-5">
           {error ? (
@@ -105,7 +105,7 @@ export default function Results() {
             <>
                {mode !== "list" ? (
                 <>
-                <div className="flex justify-end">
+                <div className="mt-5 sm:mt-0 flex justify-end">
                   <select className="bg-gray-200 p-2 rounded-lg" value={groupBy || ""} onChange={(e) => setGroupBy(e.target.value)} name="" id="">
                    <option value="" disabled>Select Group By</option>
                   {availableGroupBy.map((option, index) => (
@@ -117,7 +117,7 @@ export default function Results() {
                 </div>
 
                 <div className="w-[60%] flex items-center justify-center mx-auto">
-                    <JsBarChart  dataUIB={searchResult}/>
+                    {/* <JsBarChart  dataUIB={searchResult}/> */}
                     <JsPieChart  dataUIB={searchResult}/>
                 </div>
                 </>

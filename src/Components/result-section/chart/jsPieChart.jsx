@@ -85,7 +85,7 @@ const ChartJSPie = ({ dataUIB }) => {
       },
       title: {
         display: true,
-        text: "Pie Chart Example",
+        text: "",
       },
     },
   };
