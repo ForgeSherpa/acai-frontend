@@ -1,12 +1,12 @@
 import Resultheader from "./resultHeader";
 import Resulttable from "./resultTable";
-import { useState, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 
 import JsBarChart from "./chart/jsBarChart";
 import JsPieChart from "./chart/jsPieChart";
+import { SearchContext } from "../context/searchContext";
 
 export default function Results() {
-
   const [searchResult, setSearchResult] = useState(null);
   const [error, setError] = useState(false);
   const [page, setPage] = useState(1);
@@ -16,42 +16,30 @@ export default function Results() {
   const [groupBy, setGroupBy] = useState("");
   const [availableGroupBy, setAvailableGroupBy] = useState([]);
   const [selectedChart, setSelectedChart] = useState('pie'); // Default chart is pie
-
-  const [searchTerm, setSearchTerm] = useState(() => {
-    const term = sessionStorage.getItem('searchQuery');
-    return term ? JSON.parse(term)[0] : '';
-  });
-
-  //render result.jsx every 1 second emg agak berat tapi yasudahlah
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const term = sessionStorage.getItem('searchQuery');
-      if (term && term !== searchTerm) {
-        setSearchTerm(JSON.parse(term)[0]);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [searchTerm]);
+  const { searchTerm } = useContext(SearchContext);
 
   useEffect(() => {
-    if (searchTerm) {
-      setGroupBy("");
-      sendRequest(searchTerm, page, groupBy);
+    // https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    let ignore = false;
+    sendRequest(searchTerm, page, groupBy, ignore);
+
+    return () => {
+      ignore = true
     }
-  }, [searchTerm, page, groupBy]);
+  }, [searchTerm])
 
-  const sendRequest = async (term, page, groupBy) => {
+  const sendRequest = async (term, page, groupBy, ignore = false) => {
     setLoading(true);
     try {
       const requestBody = {
         question: term,
         page: page
       };
-  
+      
       if (groupBy) {
         requestBody.group_by = groupBy;  // Only include group_by if it's selected
       }
+
       const res = await fetch('http://127.0.0.1:8000/ask', {
         method: 'POST',
         headers: {
@@ -62,12 +50,16 @@ export default function Results() {
       
       const data = await res.json();
 
+      if(ignore) return;
+
       if (!res.ok || !data.data) {
         setError(true);
       } else {
         setSearchResult(data.data);
         setTotalPages(data.meta.total_page);
+        setPage(data.meta.page);
         setError(false);
+        setGroupBy(data.meta.group_by);
 
         setMode(data.meta.mode);
         setAvailableGroupBy(data.meta.available_group_by || []);
@@ -75,14 +67,15 @@ export default function Results() {
 
     } catch (error) {
       setError(true);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
-      setPage(newPage); // Change page number on user input
+      // setPage(newPage); // Change page number on user input
+      sendRequest(searchTerm, newPage, groupBy);
     }
   };
 
@@ -107,7 +100,9 @@ export default function Results() {
                {mode !== "list" ? (
                 <>
                 <div className="mt-5 sm:mt-0 flex justify-end">
-                  <select className="bg-gray-200 p-2 rounded-lg" value={groupBy || ""} onChange={(e) => setGroupBy(e.target.value)} name="" id="">
+                  <select disabled={loading} className="bg-gray-200 p-2 rounded-lg" value={groupBy || ""} onChange={(e) => {
+                    sendRequest(searchTerm, page, e.target.value);
+                  }} name="" id="">
                    <option value="" disabled>Select Group By</option>
                   {availableGroupBy.map((option, index) => (
                     <option key={index} value={option}>
