@@ -6,9 +6,6 @@ import JsBarChart from "./chart/jsBarChart";
 import JsPieChart from "./chart/jsPieChart";
 import { SearchContext } from "../context/searchContext";
 
-// why this? https://react.dev/learn/you-might-not-need-an-effect#initializing-the-application
-let didInit = false;
-
 export default function Results() {
   const [searchResult, setSearchResult] = useState(null);
   const [error, setError] = useState(false);
@@ -22,17 +19,16 @@ export default function Results() {
   const { searchTerm } = useContext(SearchContext);
 
   useEffect(() => {
-    if(!didInit) {
-      didInit = true;
-      sendRequest(searchTerm, page, groupBy);
-    }
-  }, [])
+    // https://react.dev/learn/you-might-not-need-an-effect#fetching-data
+    let ignore = false;
+    sendRequest(searchTerm, page, groupBy, ignore);
 
-  useEffect(() => {
-    sendRequest(searchTerm, page, groupBy);
+    return () => {
+      ignore = true
+    }
   }, [searchTerm])
 
-  const sendRequest = async (term, page, groupBy) => {
+  const sendRequest = async (term, page, groupBy, ignore = false) => {
     setLoading(true);
     try {
       const requestBody = {
@@ -53,6 +49,8 @@ export default function Results() {
       });
       
       const data = await res.json();
+
+      if(ignore) return;
 
       if (!res.ok || !data.data) {
         setError(true);

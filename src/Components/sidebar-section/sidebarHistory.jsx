@@ -3,7 +3,7 @@ import { SearchContext } from "../context/searchContext";
 
 export default function SidebarHistory() {
 
-  const { setSearchTerm } = useContext(SearchContext);
+  const { setSearchTerm, searchTerm } = useContext(SearchContext);
   const [history, setHistory] = useState([]);
 
   const updateHistory = () => {
@@ -38,11 +38,9 @@ export default function SidebarHistory() {
           
           {history.length > 0 ? (
             history.map((item, index) => (
-              <p  key={index} className="mt-2 text-white text-sm truncate p-1 hover:bg-blue-300 rounded-md duration-300"   onClick={() => {
-                setSearchTerm(""); // Reset searchTerm terlebih dahulu
-                setTimeout(() => { // Biar useEffect di search bisa render ulang saat klik 2x history yg sama
+              <p key={index} className={`mt-2 text-white text-sm truncate p-1 hover:bg-blue-300 rounded-md duration-300 ${item === searchTerm ? 'bg-blue-500' : ''}`} onClick={() => {
+                  if(item === searchTerm) return;
                   setSearchTerm(item); // Set ulang setelah reset
-                }, 0); // Penundaan sangat kecil untuk memastikan perubahan state terdeteksi
               }}>
                 {item}
               </p>
