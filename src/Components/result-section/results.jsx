@@ -21,6 +21,7 @@ export default function Results() {
   useEffect(() => {
     // https://react.dev/learn/you-might-not-need-an-effect#fetching-data
     let ignore = false;
+    setGroupBy("");
     sendRequest(searchTerm, page, groupBy, ignore);
 
     return () => {
