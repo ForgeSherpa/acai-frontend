@@ -5,13 +5,10 @@
 
     export default function Search(){
 
-        const { searchTerm, setSearchTerm, isNewChat, setIsNewChat} = useContext(SearchContext);
+        const { searchTerm, setSearchTerm} = useContext(SearchContext);
         const [input, setInput] = useState('');
 
         useEffect(() => {
-            if(isNewChat){
-                setSearchTerm("");
-            }
             setInput(searchTerm);
         }, [searchTerm]);
 

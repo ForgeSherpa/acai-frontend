@@ -10,10 +10,8 @@ export const SearchProvider = ({ children }) => {
     return term ? JSON.parse(term)[0] : ''; //set default for searchterm yaitu nilai pertama dari searchQuery
   });
 
-  const [isNewChat, setIsNewChat] = useState(false);
-
   return (
-    <SearchContext.Provider value={{ searchTerm, setSearchTerm, isNewChat, setIsNewChat }}>
+    <SearchContext.Provider value={{ searchTerm, setSearchTerm }}>
       {children}
     </SearchContext.Provider>
   );
