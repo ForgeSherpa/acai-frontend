@@ -4,7 +4,7 @@ export default function Resulttable({ data }){
 
     return(
     <> 
-       <div className="overflow-x-auto border border-slate-300 rounded-lg mx-auto">
+       <div className="mt-16 sm:mt-12 lg:mt-0 overflow-x-auto border border-slate-300 rounded-lg mx-auto">
             <table className="table-fixed text-center mx-auto min-w-[100%]">
                 <thead className="bg-[#14213D] text-white rounded-lg">
                   <tr>

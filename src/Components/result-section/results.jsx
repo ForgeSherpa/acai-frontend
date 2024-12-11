@@ -116,8 +116,8 @@ export default function Results() {
                {mode !== "list" ? ( //IF MODE BUKAN LIST TAMPILKAN CHART
                 <>
                 {/* SELECT GROUP BY */}
-                <div className="mt-5 sm:mt-0 flex justify-end">
-                  <select disabled={loading} className="bg-gray-200 p-2 rounded-lg" value={groupBy || ""} onChange={(e) => {
+                <div className="mt-24 sm:mt-7 flex justify-end">
+                  <select disabled={loading} className="mt-5 bg-gray-200 p-2 rounded-lg" value={groupBy || ""} onChange={(e) => {
                     sendRequest(searchTerm, page, e.target.value);
                   }}>
                   {availableGroupBy.map((option, index) => (
@@ -157,8 +157,83 @@ export default function Results() {
             <>
             <Resulttable data={searchResult} />
             
-            {/* PILIH PAGE */}
+
             <nav className="mt-5 text-center" aria-label="Page navigation example">
+      <ul className="inline-flex md:hidden -space-x-px text-base h-10 flex-wrap justify-center">
+        {/* Previous Button */}
+        <li>
+          <button
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page === 1}
+            className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          >
+            Previous
+          </button>
+        </li>
+
+        {/* Current Page Button */}
+        <li>
+          <button
+            className="flex items-center justify-center px-4 h-10 leading-tight bg-blue-500 text-white border border-gray-300"
+          >
+            {page}
+          </button>
+        </li>
+
+        {/* Next Button */}
+        <li>
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page === totalPages}
+            className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          >
+            Next
+          </button>
+        </li>
+      </ul>
+
+      {/* Full Pagination for larger screens */}
+      <ul className="hidden md:inline-flex -space-x-px text-base h-10 mt-3 justify-center">
+        <li>
+          <button
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page === 1}
+            className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          >
+            Previous
+          </button>
+        </li>
+
+        {[...Array(totalPages)].map((_, index) => (
+          <li key={index}>
+            <button
+              onClick={() => handlePageChange(index + 1)}
+              className={`flex items-center justify-center px-4 h-10 leading-tight ${
+                page === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-gray-500'
+              } border border-gray-300 hover:bg-gray-100 hover:text-gray-700`}
+            >
+              {index + 1}
+            </button>
+          </li>
+        ))}
+
+        <li>
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page === totalPages}
+            className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          >
+            Next
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+
+
+{/* SEMALAM GUA LANGSUNG COPAS GPT, BELOW INI ADALAH KODE LAMANYA, KALAU ADA ERROR PAKE INI AJA  */}
+            {/* PILIH PAGE */}
+            {/* <nav className="mt-5 text-center" aria-label="Page navigation example">
               <ul className="inline-flex -space-x-px text-base h-10">
                 <li>
                   <button 
@@ -186,7 +261,7 @@ export default function Results() {
                   </button>
                 </li>
               </ul>
-            </nav>
+            </nav> */}
             </>
           )}
         </>

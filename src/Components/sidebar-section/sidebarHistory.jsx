@@ -10,7 +10,7 @@ import { SearchContext } from "../context/searchContext";
 
     const handleHistoryClick = (item) => {
       setSearchTerm(item);
-      sessionStorage.setItem('searchQuery', JSON.stringify([item, ...history])); // Save to session
+      // sessionStorage.setItem('searchQuery', JSON.stringify([item, ...history])); // Save to session
       navigate('/result'); // Navigate to the result page
     };
 
