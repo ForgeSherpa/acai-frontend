@@ -1,34 +1,38 @@
 import Resultheader from "./resultHeader";
 import Resulttable from "./resultTable";
 import { useState, useContext, useEffect } from 'react';
-
+// import JsPieChart from "./chart/jsPieChart";
 import JsBarChart from "./chart/jsBarChart";
-import JsPieChart from "./chart/jsPieChart";
 import { SearchContext } from "../context/searchContext";
+
+
 
 export default function Results() {
   const [searchResult, setSearchResult] = useState(null);
-  const [error, setError] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState("");
+
   const [groupBy, setGroupBy] = useState("");
   const [availableGroupBy, setAvailableGroupBy] = useState([]);
-  const [selectedChart, setSelectedChart] = useState('pie'); // Default chart is pie
+
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // const [selectedChart, setSelectedChart] = useState('bar');
   const { searchTerm } = useContext(SearchContext);
 
   useEffect(() => {
-    // https://react.dev/learn/you-might-not-need-an-effect#fetching-data
     let ignore = false;
-    setGroupBy("");
-    sendRequest(searchTerm, page, groupBy, ignore);
-
+    if (searchTerm) {
+    sendRequest(searchTerm, 1, "", ignore);
+    }
     return () => {
       ignore = true
     }
   }, [searchTerm])
 
+  //send ask to backend
   const sendRequest = async (term, page, groupBy, ignore = false) => {
     setLoading(true);
     try {
@@ -53,18 +57,28 @@ export default function Results() {
 
       if(ignore) return;
 
-      if (!res.ok || !data.data) {
-        setError(true);
-      } else {
         setSearchResult(data.data);
-        setTotalPages(data.meta.total_page);
         setPage(data.meta.page);
-        setError(false);
+        setTotalPages(data.meta.total_page);
         setGroupBy(data.meta.group_by);
-
         setMode(data.meta.mode);
+        setError(false);
+      
         setAvailableGroupBy(data.meta.available_group_by || []);
-      }
+
+      // if (!res.ok || !data.data) {
+      //   setError(true);
+      // } else {
+      //   setSearchResult(data.data);
+      //   setPage(data.meta.page);
+      //   setTotalPages(data.meta.total_page);
+      //   setGroupBy(data.meta.group_by);
+      //   setMode(data.meta.mode);
+
+      //   setError(false);
+
+      //   setAvailableGroupBy(data.meta.available_group_by || []);
+      // }
 
     } catch (error) {
       setError(true);
@@ -83,31 +97,35 @@ export default function Results() {
   return (
     <>
       <div className="container mx-auto mt-10">
-
         <div className="pt-0.5 pb-0.5 mx-auto w-[90%] rounded-lg min-h-96 bg-gradient-to-b from-[#69B2F1] from-60% to-[#FCA311] to-100%">
           <Resultheader searchTerm={searchTerm}/>
-
           <div className="min-h-80 w-[99.4%] mx-auto bg-white rounded-br-lg rounded-bl-lg p-5">
-          {error ? (
+            
+
+          {loading ? ( //IF LOADING TAMPILKAN INI
+                      <div className="flex items-center justify-center h-screen">
+                      <p className="text-slate-800">Loading...</p>
+                    </div>
+
+           ) : error ? ( //IF  ERROR TAMPILKAN INI
             <div className="flex items-center justify-center h-screen">
               <p className="text-slate-800">"Sorry, we couldn't find anything 😞"</p>
             </div>
-           ) : loading ? (
-            <div className="flex items-center justify-center h-screen">
-              <p className="text-slate-800">Loading...</p>
-            </div>
           ) : (
             <>
-               {mode !== "list" ? (
+               {mode !== "list" ? ( //IF MODE BUKAN LIST TAMPILKAN CHART
                 <>
+                {/* SELECT GROUP BY */}
                 <div className="mt-5 sm:mt-0 flex justify-end">
                   <select disabled={loading} className="bg-gray-200 p-2 rounded-lg" value={groupBy || ""} onChange={(e) => {
                     sendRequest(searchTerm, page, e.target.value);
-                  }} name="" id="">
-                   <option value="" disabled>Select Group By</option>
+                  }}>
                   {availableGroupBy.map((option, index) => (
                     <option key={index} value={option}>
-                            {option}
+                      {option
+                        .replace(/_/g, " ") // Mengganti underscore dengan spasi
+                        .replace(/\b\w/g, (char) => char.toUpperCase()) // Kapital di awal setiap kata
+                      }
                           </option>
                   ))}
                   </select>
@@ -115,11 +133,12 @@ export default function Results() {
 
                  {/* Pilihan Chart */}
                   <div className="w-[60%] flex items-center justify-center mx-auto mt-8">
-                    {selectedChart === 'bar' && <JsBarChart dataUIB={searchResult} />}
-                    {selectedChart === 'pie' && <JsPieChart dataUIB={searchResult} />}
+                    <JsBarChart dataUIB={searchResult} />
+                    {/* {selectedChart === 'bar' && <JsBarChart dataUIB={searchResult} />}
+                    {selectedChart === 'pie' && <JsPieChart dataUIB={searchResult} />} */}
                   </div>
 
-                  <div className="mt-10 flex">
+                  {/* <div className="mt-10 flex">
                     <button 
                       onClick={() => setSelectedChart('bar')}
                       className={`py-2 px-4 rounded ${selectedChart === 'bar' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
@@ -132,12 +151,13 @@ export default function Results() {
                     >
                       Pie Chart
                     </button>
-                  </div>
+                  </div> */}
                 </>
-          ) : (
+          ) : ( //IF MODE LIST TAMPILKAN TABLE
             <>
             <Resulttable data={searchResult} />
             
+            {/* PILIH PAGE */}
             <nav className="mt-5 text-center" aria-label="Page navigation example">
               <ul className="inline-flex -space-x-px text-base h-10">
                 <li>

@@ -6,8 +6,9 @@ import Footer from "../Components/footer";
 import { SearchProvider } from "../Components/context/searchContext";
 import React, { useState } from "react";
 
+//show and hide sidebar
 export default function Home() {
-  const [isVisible, setVisible] = React.useState(false);
+  const [isVisible, setVisible] = useState(false);
 
   const toogleSidebar = () => {
     setVisible(!isVisible);

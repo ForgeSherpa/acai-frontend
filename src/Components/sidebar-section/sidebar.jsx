@@ -4,6 +4,7 @@ import SidebarHead from "./sidebarHead";
 import SidebarNewChat from "./sidebarNewchat";
 import SidebarHistory from "./sidebarHistory";
 
+//open sidebar
 const slideIn = keyframes`
   from {
     transform: translateX(-100%);
@@ -13,6 +14,7 @@ const slideIn = keyframes`
   }
 `;
 
+//close sidebar
 const slideOut = keyframes`
   from {
     transform: translateX(0);
@@ -22,12 +24,13 @@ const slideOut = keyframes`
   }
 `;
 
+//making component sidebar custom
 const SidebarCustom = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'animation' && prop !== 'isFirstRender', // Prevent passing animation prop to DOM element
 })`
   position: fixed;
   top: 0;
-  animation: ${({ animation, isFirstRender }) =>
+  animation: ${({ animation, isFirstRender }) =>  //jika render pertama kali, animasi 0 second biar ga kelihatan
     isFirstRender
       ? css`
           ${slideOut} 0s forwards
@@ -54,6 +57,7 @@ export default function Sidebar({ func, animation }) {
 
   const [isFirstRender, setIsFirstRender] = useState(true);
 
+  //saat pertama kali render, set is first render ke false
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsFirstRender(false);

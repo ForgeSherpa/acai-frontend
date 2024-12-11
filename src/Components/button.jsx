@@ -1,4 +1,4 @@
-export default function Button({event, bgColor = "bg-[#14213D]"}){
+export default function Button({event, bgColor = "bg-[#14213D]"}){  //bg color di sidebar dan di page beda
     return(
     <>
      <button onClick={event}>

@@ -1,30 +1,32 @@
-import { Link } from 'react-router-dom';
-import { useContext, useState, useEffect } from 'react';
-import { SearchContext } from "../context/searchContext";
+    import { Link } from 'react-router-dom';
+    import { useContext, useState, useEffect } from 'react';
+    import { SearchContext } from "../context/searchContext";
+    import { setsEqual } from 'chart.js/helpers';
 
-export default function Search(){
+    export default function Search(){
 
-    const { searchTerm, setSearchTerm } = useContext(SearchContext);
-    const [input, setInput] = useState('');
+        const { searchTerm, setSearchTerm, isNewChat, setIsNewChat} = useContext(SearchContext);
+        const [input, setInput] = useState('');
 
-    useEffect(() => {
-        if (searchTerm) {
-          setInput(searchTerm);
-        }
-      }, [searchTerm])
+        useEffect(() => {
+            if(isNewChat){
+                setSearchTerm("");
+            }
+            setInput(searchTerm);
+        }, [searchTerm]);
 
-    const handleInputChange = (e) => {
-        setInput(e.target.value);
-      };
+        const handleInputChange = (e) => {
+            setInput(e.target.value); //set input sesuai apa yang diinput user scr manual
+        };
 
-    const handleSearchClick = () => {
+    const handleSearchClick = () => { //pas user klik, tambahkan ke history & buat jadi plg dpn
         if (input.trim() !== '') {
             const storedHistory = sessionStorage.getItem('searchQuery');
             const history = storedHistory ? JSON.parse(storedHistory) : [];
-            const updatedHistory = [input, ...history];
+            const updatedHistory = [input, ...history]; //input user jadi paling depan
             sessionStorage.setItem('searchQuery', JSON.stringify(updatedHistory ));
 
-            // Set the search term to be used in result page
+            //kalau history udh beres, isi search term dgn input, biar bisa dipake di result
             setSearchTerm(input);   
         }else {
             alert("Please enter a search term!"); // Tampilkan alert jika input kosong
