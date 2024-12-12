@@ -3,6 +3,7 @@
     import { SearchContext } from "../context/searchContext";
     import { setsEqual } from 'chart.js/helpers';
     import { Toaster, toast } from 'sonner';
+    import { Filter } from 'bad-words';
 
 
     export default function Search(){
@@ -18,40 +19,74 @@
             setInput(e.target.value); //set input sesuai apa yang diinput user scr manual
         };
 
-        const forbiddenWords = [
-            "anjing", "kontol", "memek", "bajingan", "goblok", "tolol", "bangsat", "setan", "monyet",
-            "brengsek", "kampret", "bacot", "asu", "lontong", "pelacur", "jalang", "pecun", "pelit",
-            "cablok", "kondom", "aswang", "perek", "dungu", "babi", "sialan", "tai", "bangke",
-            "keparat", "bodo", "monyong", "ngentot", "shit", "fuck", "damn", "bitch", "slut", "whore"
-        ];
-        
 
-        const containsForbiddenWords = (input) => {
-            return forbiddenWords.some((word) =>
-                input.toLowerCase().includes(word.toLowerCase())
-            );
+
+
+            const filter = new Filter();
+
+            const containsProfanity = (input) => {
+                return filter.isProfane(input); // Memeriksa apakah input mengandung kata-kata kasar
+            };
+
+
+
+            const forbiddenWords = [
+                "f*ck", "anjing", "kontol", "memek", "bajingan", "goblok", "tolol", "bangsat", "setan", "monyet",
+                "brengsek", "kampret", "bacot", "asu", "lontong", "pelacur", "jalang", "pecun", "pelit",
+                "cablok", "kondom", "aswang", "perek", "dungu", "babi", "sialan", "tai", "bangke",
+                "keparat", "bodo", "monyong", "ngentot", "shit", "fuck", "damn", "bitch", "slut", "whore"
+            ];
+            
+            const normalizeString = (str) => {
+                return str.toLowerCase()
+                    .replace(/[4]/g, 'a')   // Ganti 4 dengan a
+                    .replace(/[3]/g, 'e')   // Ganti 3 dengan e
+                    .replace(/[1!]/g, 'i')  // Ganti 1 atau ! dengan i
+                    .replace(/[0]/g, 'o')   // Ganti 0 dengan o
+                    .replace(/[5]/g, 's')   // Ganti 5 dengan s
+                    .replace(/[7]/g, 't')   // Ganti 7 dengan t
+                    .replace(/[^a-z]/g, ''); // Menghapus karakter selain huruf
+            };
+
+            const containsForbiddenWords = (input) => {
+                const cleanedInput = normalizeString(input); // Membersihkan input
+            
+                // Mencocokkan kata terlarang dengan regex
+                const regex = new RegExp(
+                    forbiddenWords
+                        .map(word => word
+                            .replace(/[a@4]/g, '[a@4]')  // Variasi huruf 'a'
+                            .replace(/[e3]/g, '[e3]')    // Variasi huruf 'e'
+                            .replace(/[i1!]/g, '[i1!]')  // Variasi huruf 'i'
+                            .replace(/[o0]/g, '[o0]')    // Variasi huruf 'o'
+                            .replace(/[s5]/g, '[s5]')    // Variasi huruf 's'
+                            .replace(/[t7]/g, '[t7]')    // Variasi huruf 't'
+                            .replace(/[\*\+\-\_\=\#\$\%\^\&\*\(\)\_\!\~\`\.\,\/]/g, '') // Menghapus karakter khusus
+                        )
+                        .join('|'), 'i' // Gabungkan regex untuk semua kata
+                );
+            
+                return regex.test(cleanedInput); // Cek apakah input cocok dengan regex
+            };
+
+        const handleSearchClick = (event) => { //pas user klik, tambahkan ke history & buat jadi plg dpn
+            if (containsProfanity(input) || containsForbiddenWords(input)) {
+                event.preventDefault(); // Mencegah navigasi ke halaman lain
+                toast.error("Harap masukkan prompt dengan sopan!"); // Menampilkan pesan error
+                return;
+            }
+
+            if (input.trim() !== '') {
+                const storedHistory = sessionStorage.getItem('searchQuery');
+                const history = storedHistory ? JSON.parse(storedHistory) : [];
+                const updatedHistory = [input, ...history]; //input user jadi paling depan
+                sessionStorage.setItem('searchQuery', JSON.stringify(updatedHistory ));
+
+                //kalau history udh beres, isi search term dgn input, biar bisa dipake di result
+                setSearchTerm(input);   
+            } 
         };
-
-    const handleSearchClick = (event) => { //pas user klik, tambahkan ke history & buat jadi plg dpn
-        if (containsForbiddenWords(input)) {
-            event.preventDefault(); // Mencegah navigasi ke halaman lain
-            toast.error("Jangan ya dek ya");
-            return;
-        }
-
-        if (input.trim() !== '') {
-            const storedHistory = sessionStorage.getItem('searchQuery');
-            const history = storedHistory ? JSON.parse(storedHistory) : [];
-            const updatedHistory = [input, ...history]; //input user jadi paling depan
-            sessionStorage.setItem('searchQuery', JSON.stringify(updatedHistory ));
-
-            //kalau history udh beres, isi search term dgn input, biar bisa dipake di result
-            setSearchTerm(input);   
-        }else {
-            alert("Please enter a search term!"); // Tampilkan alert jika input kosong
-        }   
-    };
-    
+        
 
 
 
@@ -70,7 +105,7 @@
         {/* Toaster Provider */}
         {/* bebas mau pake yang mana, ntar koment aja salah satu! */}
         <Toaster position="top-center" richColors />
-        <Toaster position="top-right" richColors />
+        {/* <Toaster position="top-right" richColors /> */}
     </>
     );
 }   
